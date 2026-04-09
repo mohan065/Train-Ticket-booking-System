@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Train Booking System</title>
+
+<style>
+    body {
+        font-family: Arial;
+        text-align: center;
+        background: linear-gradient(to right, #74ebd5, #9face6);
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        color: #222;
+        margin-top: 20px;
+    }
+
+    .box {
+        background: white;
+        padding: 20px;
+        margin: 20px auto;
+        width: 320px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+    }
+
+    input, button {
+        width: 90%;
+        padding: 10px;
+        margin: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    button {
+        background: #4CAF50;
+        color: white;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #45a049;
+    }
+
+    .train {
+        background: #f9f9f9;
+        margin: 10px auto;
+        padding: 10px;
+        border-radius: 5px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>🚆 Train Booking System</h1>
+
+<div class="box">
+    <input type="text" id="from" placeholder="From">
+    <input type="text" id="to" placeholder="To">
+    <input type="date" id="date">
+    <button onclick="searchTrains()">Search Trains</button>
+</div>
+
+<div id="trainList"></div>
+
+<div id="bookingSection" class="box" style="display:none;">
+    <h3>Passenger Details</h3>
+    <input type="text" id="name" placeholder="Passenger Name">
+    <button onclick="bookTicket()">Book Ticket</button>
+</div>
+
+<div id="confirmation" class="box"></div>
+
+<script>
+const trains = [
+    { name: "Chennai Express", from: "Chennai", to: "Madurai", time: "10:00 AM" },
+    { name: "Coimbatore Superfast", from: "Chennai", to: "Coimbatore", time: "02:00 PM" },
+    { name: "Madurai Express", from: "Madurai", to: "Chennai", time: "06:00 PM" }
+];
+
+let selectedTrain = null;
+
+function searchTrains() {
+    let from = document.getElementById("from").value.toLowerCase();
+    let to = document.getElementById("to").value.toLowerCase();
+
+    let result = trains.filter(t =>
+        t.from.toLowerCase() === from &&
+        t.to.toLowerCase() === to
+    );
+
+    let trainList = document.getElementById("trainList");
+    trainList.innerHTML = "";
+
+    if (result.length === 0) {
+        trainList.innerHTML = "<div class='box'>❌ No trains found</div>";
+        return;
+    }
+
+    result.forEach((train, index) => {
+        trainList.innerHTML += `
+            <div class="train box">
+                <h3>${train.name}</h3>
+                <p>${train.from} → ${train.to}</p>
+                <p>Time: ${train.time}</p>
+                <button onclick="selectTrain(${index})">Select</button>
+            </div>
+        `;
+    });
+}
+
+function selectTrain(index) {
+    selectedTrain = trains[index];
+    document.getElementById("bookingSection").style.display = "block";
+}
+
+function bookTicket() {
+    let name = document.getElementById("name").value;
+
+    if (!name) {
+        alert("Enter passenger name");
+        return;
+    }
+
+    document.getElementById("confirmation").innerHTML = `
+        <h2>✅ Booking Confirmed</h2>
+        <p><b>Name:</b> ${name}</p>
+        <p><b>Train:</b> ${selectedTrain.name}</p>
+        <p><b>Route:</b> ${selectedTrain.from} → ${selectedTrain.to}</p>
+    `;
+}
+</script>
+
+</body>
+</html>
